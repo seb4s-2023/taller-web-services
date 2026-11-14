@@ -1,85 +1,338 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reconocedor MNIST</title>
+    <meta name="theme-color" content="#090b16">
+    <title>Neural Vision | Reconocedor MNIST</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 </head>
 <body>
 
-    <h1>Reconocedor de Números (IA)</h1>
-    <p>Sube una imagen de un número escrito a mano (0-9).</p>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
 
-    <form id="formulario">
-        <input type="file" id="inputImagen" accept="image/*" required>
-        
-        <div class="preview-caja">
-            <img id="preview" style="display: none;" alt="Previsualización">
-            <span id="textoPreview">Vista previa de la imagen</span>
+    <header class="navbar">
+        <a href="/" class="brand">
+            <div class="brand-icon">N</div>
+            <span>NEURAL<span class="brand-light">VISION</span></span>
+        </a>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            IA disponible
         </div>
+    </header>
 
-        <button type="submit" id="btnEnviar">Analizar Imagen</button>
-    </form>
+    <main class="main-container">
 
-    <div id="resultado"></div>
+        <section class="hero">
+            <div class="eyebrow">
+                <span>✦</span> INTELIGENCIA ARTIFICIAL · MNIST
+            </div>
+
+            <h1>Reconoce números<br>
+                <span>con inteligencia artificial.</span>
+            </h1>
+
+            <p class="hero-description">
+                Sube una imagen de un número escrito a mano y deja
+                que nuestro modelo de IA lo identifique por ti.
+            </p>
+        </section>
+
+        <section class="workspace">
+
+            <div class="section-heading">
+                <div>
+                    <span class="step-label">PASO 01</span>
+                    <h2>Sube tu imagen</h2>
+                </div>
+                <span class="format-label">JPG · PNG · WEBP</span>
+            </div>
+
+            <form id="formulario">
+
+                <label for="inputImagen" class="upload-zone" id="uploadZone">
+
+                    <div class="upload-content" id="uploadContent">
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 24 24" fill="none"
+                                 stroke="currentColor" stroke-width="1.6"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 16V4"/>
+                                <path d="m7 9 5-5 5 5"/>
+                                <path d="M20 16.5v2A1.5 1.5 0 0 1 18.5 20h-13A1.5 1.5 0 0 1 4 18.5v-2"/>
+                            </svg>
+                        </div>
+
+                        <h3>Arrastra tu imagen aquí</h3>
+                        <p>o haz clic para explorar tus archivos</p>
+
+                        <span class="browse-button">Seleccionar imagen</span>
+                    </div>
+
+                    <input type="file" id="inputImagen"
+                           accept="image/png,image/jpeg,image/webp,image/gif"
+                           hidden required>
+
+                </label>
+
+                <div class="preview-container" id="previewContainer" hidden>
+                    <div class="preview-header">
+                        <span>VISTA PREVIA</span>
+                        <button type="button" id="btnEliminar" class="remove-button">
+                            ✕ Eliminar imagen
+                        </button>
+                    </div>
+
+                    <div class="image-frame">
+                        <img id="preview" alt="Imagen seleccionada">
+                    </div>
+
+                    <p class="preview-note">Imagen lista para analizar</p>
+                </div>
+
+                <button type="submit" id="btnEnviar" class="analyze-button" disabled>
+                    <span id="btnIcon">✦</span>
+                    <span id="btnText">Analizar con IA</span>
+                    <span class="button-arrow">→</span>
+                </button>
+
+            </form>
+
+            <section id="resultado" class="result-card" aria-live="polite" hidden>
+                <div class="result-top">
+                    <div>
+                        <span class="step-label">RESULTADO DEL ANÁLISIS</span>
+                        <h2>Predicción completada</h2>
+                    </div>
+                    <span class="result-check">✓</span>
+                </div>
+
+                <div class="prediction-content">
+                    <div class="prediction-number" id="numeroPredicho">0</div>
+                    <div class="prediction-info">
+                        <span>NÚMERO IDENTIFICADO</span>
+                        <h3>El modelo reconoce:</h3>
+                        <p>Este es el número detectado en tu imagen.</p>
+                    </div>
+                </div>
+
+                <div class="confidence-section">
+                    <div class="confidence-heading">
+                        <span>Confianza del modelo</span>
+                        <strong id="confianzaTexto">0%</strong>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="barraConfianza"></div>
+                    </div>
+                    <p class="confidence-note">
+                        Probabilidad estimada para la clase predicha.
+                    </p>
+                </div>
+            </section>
+
+            <div id="errorBox" class="error-box" role="alert" hidden></div>
+
+        </section>
+
+        <section class="info-grid">
+            <article class="info-card">
+                <div class="info-icon">◈</div>
+                <h3>Modelo MNIST</h3>
+                <p>Entrenado para reconocer dígitos del 0 al 9.</p>
+            </article>
+
+            <article class="info-card">
+                <div class="info-icon">⚡</div>
+                <h3>Procesamiento IA</h3>
+                <p>Análisis automático mediante LiteRT.</p>
+            </article>
+
+            <article class="info-card">
+                <div class="info-icon">▦</div>
+                <h3>28 × 28 píxeles</h3>
+                <p>La imagen se adapta al formato del modelo.</p>
+            </article>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-line"></div>
+        <p>NEURAL VISION <span>·</span> Proyecto de reconocimiento de imágenes con IA</p>
+        <p class="footer-subtitle">Desarrollado con Python, Flask y LiteRT</p>
+    </footer>
 
     <script>
         const inputImagen = document.getElementById('inputImagen');
-        const preview = document.getElementById('preview');
-        const textoPreview = document.getElementById('textoPreview');
         const formulario = document.getElementById('formulario');
+        const preview = document.getElementById('preview');
+        const previewContainer = document.getElementById('previewContainer');
+        const uploadZone = document.getElementById('uploadZone');
+        const uploadContent = document.getElementById('uploadContent');
         const btnEnviar = document.getElementById('btnEnviar');
-        const divResultado = document.getElementById('resultado');
+        const btnText = document.getElementById('btnText');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnEliminar = document.getElementById('btnEliminar');
+        const resultado = document.getElementById('resultado');
+        const errorBox = document.getElementById('errorBox');
 
-        // Mostrar la imagen apenas el usuario la selecciona
-        inputImagen.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    textoPreview.style.display = 'none';
-                    divResultado.innerHTML = ''; // Limpiar resultados anteriores
-                }
-                reader.readAsDataURL(file);
-            }
-        });
+        let imagenValida = false;
 
-        // Enviar la imagen al backend con Fetch
-        formulario.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const file = inputImagen.files[0];
+        function limpiarResultados() {
+            resultado.hidden = true;
+            errorBox.hidden = true;
+            errorBox.textContent = '';
+        }
+
+        function mostrarError(mensaje) {
+            errorBox.textContent = mensaje;
+            errorBox.hidden = false;
+            resultado.hidden = true;
+        }
+
+        function seleccionarImagen(file) {
+            limpiarResultados();
+
             if (!file) return;
 
+            if (!file.type.startsWith('image/')) {
+                mostrarError('Selecciona un archivo de imagen válido.');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                mostrarError('La imagen no puede superar los 10 MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                previewContainer.hidden = false;
+                uploadContent.classList.add('has-image');
+                btnEnviar.disabled = false;
+                imagenValida = true;
+            };
+
+            reader.onerror = function() {
+                mostrarError('No se pudo cargar la imagen.');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        inputImagen.addEventListener('change', function() {
+            seleccionarImagen(this.files[0]);
+        });
+
+        // Arrastrar y soltar imágenes
+        uploadZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            uploadZone.classList.add('dragging');
+        });
+
+        uploadZone.addEventListener('dragleave', function() {
+            uploadZone.classList.remove('dragging');
+        });
+
+        uploadZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            uploadZone.classList.remove('dragging');
+
+            const file = e.dataTransfer.files[0];
+            if (!file) return;
+
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            inputImagen.files = transfer.files;
+
+            seleccionarImagen(file);
+        });
+
+        // Eliminar imagen
+        btnEliminar.addEventListener('click', function() {
+            inputImagen.value = '';
+            preview.src = '';
+            previewContainer.hidden = true;
             btnEnviar.disabled = true;
-            btnEnviar.textContent = 'Procesando...';
-            divResultado.innerHTML = '';
+            imagenValida = false;
+            uploadContent.classList.remove('has-image');
+            limpiarResultados();
+        });
+
+        // Enviar imagen al servidor Flask
+        formulario.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const file = inputImagen.files[0];
+
+            if (!file || !imagenValida) {
+                mostrarError('Primero selecciona una imagen.');
+                return;
+            }
+
+            btnEnviar.disabled = true;
+            btnText.textContent = 'Analizando imagen...';
+            btnIcon.textContent = '◌';
+            btnEnviar.classList.add('loading');
+
+            limpiarResultados();
 
             const formData = new FormData();
             formData.append('imagen', file);
 
             try {
-                // Al estar en el mismo servidor, usamos ruta relativa
                 const response = await fetch('/predecir', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 const data = await response.json();
-                
-                if (response.ok) {
-                    divResultado.innerHTML = `¡Es un ${data.numero_predicho}! <br><small style="color: gray">Confianza: ${data.confianza}%</small>`;
-                } else {
-                    divResultado.innerHTML = `<span style="color: red">Error: ${data.error}</span>`;
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'No se pudo analizar la imagen.');
                 }
+
+                const numero = Number(data.numero_predicho);
+                const confianza = Number(data.confianza);
+
+                if (!Number.isInteger(numero) || numero < 0 || numero > 9 ||
+                    !Number.isFinite(confianza)) {
+                    throw new Error('El servidor devolvió un resultado inválido.');
+                }
+
+                document.getElementById('numeroPredicho').textContent = numero;
+
+                const porcentaje = Math.min(100, Math.max(0, confianza));
+                document.getElementById('confianzaTexto').textContent =
+                    porcentaje.toFixed(2) + '%';
+
+                resultado.hidden = false;
+
+                requestAnimationFrame(() => {
+                    document.getElementById('barraConfianza').style.width =
+                        porcentaje + '%';
+                });
+
             } catch (error) {
-                divResultado.innerHTML = `<span style="color: red">Error de conexión con el servidor.</span>`;
+                mostrarError(
+                    error.message === 'Failed to fetch'
+                    ? 'Error de conexión con el servidor. Comprueba que Flask esté funcionando.'
+                    : error.message
+                );
             } finally {
                 btnEnviar.disabled = false;
-                btnEnviar.textContent = 'Analizar Imagen';
+                btnText.textContent = 'Analizar con IA';
+                btnIcon.textContent = '✦';
+                btnEnviar.classList.remove('loading');
             }
         });
     </script>
+
 </body>
 </html>
